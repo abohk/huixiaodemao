@@ -1,0 +1,64 @@
+`timescale 1ns/1ns
+
+module fifo_test(
+//时钟复位信号
+	input               clk,
+	input	    		rst,
+	
+//写模块
+	input                i_afull,
+	output               o_fifo_wren_0,
+    input    [7:0]       i_dataw,
+//	output wire  [7:0]       o_dataw_fifo，
+	
+//读模块
+	input	 		     i_fifo_empty,
+	output   		     o_fifo_ren_0,
+	input    [7:0]		 i_datar_fifo,
+	output   [7:0]		 o_datar
+    );
+	
+	
+	
+	
+wire almost_full;	
+wire    [7:0]        o_dataw_fifo;
+//wire    [7:0]		 i_datar_fifo,
+
+//ip fifo
+fifo_generator_0  fifo_generator_0(
+  .clk(clk),                  // input wire clk
+  .srst(rst),                // input wire srst
+  .din(o_dataw_fifo),                  // input wire [7 : 0] din
+  .wr_en(o_fifo_wren_0),              // input wire wr_en
+  .rd_en(o_fifo_ren_0),              // input wire rd_en
+  .dout( i_datar_fifo),                // output wire [7 : 0] dout
+  .full(i_afull),                // output wire full
+  .almost_full(almost_full),  // output wire almost_full
+  .empty(i_fifo_empty)              // output wire empty
+);
+
+//读模块
+fifo_w   fifo_w(
+	        .clk(clk),
+	        .rst(rst),
+	        .i_afull(i_afull),
+	        .o_fifo_wren_0(o_fifo_wren_0),
+            .i_dataw(i_dataw),
+            .o_dataw_fifo(o_dataw_fifo)
+    );
+
+//读模块
+fifo_r   fifo_r(
+	        .clk(clk),
+	        .rst(rst),
+	        .i_fifo_empty(i_fifo_empty),
+	        .o_fifo_ren_0(o_fifo_ren_0),
+            .i_datar_fifo(i_datar_fifo),
+            .o_datar(o_datar)
+    );
+
+
+
+
+endmodule
